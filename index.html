@@ -184,6 +184,22 @@
             gap: 6px;
         }
 
+        .plato-controles button {
+            transition: all 0.2s;
+        }
+        .plato-controles button:hover {
+            background: #b71c1c;
+            color: white;
+        }
+        .btn-eliminar-pedido:hover {
+            color: #b71c1c !important;
+            transform: scale(1.1);
+        }
+        #lista-pedido li {
+            border-bottom: 1px dashed #ddd;
+            padding: 0.8rem 0;
+        }
+
         .plato-desc {
             font-size: 0.9rem;
             color: #666;
@@ -643,8 +659,8 @@
             });
         }
 
-        // Actualizar panel de pedido
         function actualizarPedido() {
+            // Met à jour les compteurs dans le menu
             document.querySelectorAll('.plato').forEach(plato => {
                 const nombre = plato.dataset.nombre;
                 const desc = plato.dataset.desc;
@@ -657,19 +673,30 @@
                 }
             });
 
+            // Reconstruit la liste du panier
             total = 0;
             let itemsHtml = '';
             for (let clave in pedido) {
                 const item = pedido[clave];
                 const subtotal = item.cantidad * item.precio;
                 total += subtotal;
-                itemsHtml += `<li>
-                    <span class="item-nombre">${item.nombre} ${item.desc ? `<small>${item.desc}</small>` : ''}</span>
-                    <span class="item-cantidad">x${item.cantidad}</span>
-                    <span class="item-precio">S/ ${subtotal.toFixed(2)}</span>
+                itemsHtml += `<li style="display: flex; flex-direction: column; gap: 0.3rem; border-bottom: 1px dashed #ddd; padding: 0.8rem 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <span class="item-nombre" style="flex: 2;">${item.nombre} ${item.desc ? `<small>${item.desc}</small>` : ''}</span>
+                        <span class="item-precio" style="white-space: nowrap;">S/ ${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.2rem;">
+                        <div class="plato-controles" style="margin-left: 0; background: #f0f0f0;">
+                            <button class="btn-menos-pedido" data-clave="${clave}" style="background: white; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; font-weight: 700; color: #b71c1c; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">−</button>
+                            <span class="cantidad-pedido" style="min-width: 30px; text-align: center; font-weight: 600;">${item.cantidad}</span>
+                            <button class="btn-mas-pedido" data-clave="${clave}" style="background: white; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; font-weight: 700; color: #b71c1c; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">+</button>
+                        </div>
+                        <button class="btn-eliminar-pedido" data-clave="${clave}" style="background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; padding: 0.2rem 0.5rem;" title="Eliminar">🗑️</button>
+                    </div>
                 </li>`;
             }
 
+            // Met à jour l'affichage du panier (vide ou plein)
             if (itemsHtml === '') {
                 pedidoVacio.style.display = 'block';
                 pedidoContenido.style.display = 'none';
@@ -678,6 +705,44 @@
                 pedidoContenido.style.display = 'block';
                 listaPedido.innerHTML = itemsHtml;
                 totalSpan.textContent = `S/ ${total.toFixed(2)}`;
+
+                // === Écouteurs pour les boutons du panier ===
+                // Bouton + dans le panier
+                document.querySelectorAll('.btn-mas-pedido').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const clave = e.target.dataset.clave;
+                        if (pedido[clave]) {
+                            pedido[clave].cantidad++;
+                            actualizarPedido(); // Re-render pour mettre à jour l'affichage
+                        }
+                    });
+                });
+
+                // Bouton - dans le panier
+                document.querySelectorAll('.btn-menos-pedido').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const clave = e.target.dataset.clave;
+                        if (pedido[clave]) {
+                            pedido[clave].cantidad--;
+                            if (pedido[clave].cantidad <= 0) {
+                                delete pedido[clave];
+                            }
+                            actualizarPedido();
+                        }
+                    });
+                });
+
+                // Bouton supprimer (corbeille)
+                document.querySelectorAll('.btn-eliminar-pedido').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const clave = e.target.dataset.clave;
+                        delete pedido[clave];
+                        actualizarPedido();
+                    });
+                });
             }
         }
 
