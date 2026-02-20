@@ -436,7 +436,7 @@
     </footer>
 
     <script>
-        // DATOS DEL MENÚ (fiel a las imágenes + nueva categoría Abarrotes)
+        // DATOS DEL MENÚ (fiel a las imágenes + categoría Abarrotes)
         const categorias = [
             {
                 nombre: "HAMBURGUESAS",
@@ -446,7 +446,7 @@
                     { nombre: "FILETE DE POLLO", desc: "Pan, filete de pollo, papas fritas", precio: 8 },
                     { nombre: "POLLO DESMENUZADO", desc: "Pollo desmenuzado, papas fritas", precio: 8 },
                     { nombre: "HAMBURGUESA CLASICA", desc: "150gr. de pura carne, papa frita", precio: 8 },
-                    { nombre: "AMERICANADA", desc: "Res, doble tocino, papa frita.", precio: 10 },
+                    { nombre: "AMERICANA", desc: "Res, doble tocino, papa frita.", precio: 10 },
                     { nombre: "CHEESE BURGER", desc: "Res, doble Queso Edam, Papas.", precio: 10 },
                     { nombre: "ROYAL", desc: "Res, Queso Edam, huevo, papas.", precio: 12 },
                     { nombre: "POWER BBQ.", desc: "Doble hamburguesa, queso, BBQ y papas fritas.", precio: 12 },
@@ -540,7 +540,7 @@
             }
         ];
 
-        // Estado del pedido (objeto con clave = nombre, valor = {cantidad, precio})
+        // Estado del pedido
         let pedido = {};
         let total = 0;
 
@@ -590,7 +590,6 @@
                 const btnMenos = plato.querySelector('.btn-menos');
                 const spanCant = plato.querySelector('.cantidad');
 
-                // Clave única para el pedido (incluye descripción para distinguir variantes)
                 const clave = nombre + (desc ? ` - ${desc}` : '');
 
                 btnMas.addEventListener('click', () => {
@@ -617,7 +616,6 @@
 
         // Actualizar panel de pedido
         function actualizarPedido() {
-            // Actualizar cantidades en el menú
             document.querySelectorAll('.plato').forEach(plato => {
                 const nombre = plato.dataset.nombre;
                 const desc = plato.dataset.desc;
@@ -630,7 +628,6 @@
                 }
             });
 
-            // Calcular total y generar lista HTML
             total = 0;
             let itemsHtml = '';
             for (let clave in pedido) {
@@ -655,8 +652,31 @@
             }
         }
 
-        // Enviar pedido (simulación)
-        btnEnviar.addEventListener('click', () => {
+        // ================== CONFIGURACIÓN TELEGRAM ==================
+        const TELEGRAM_TOKEN = '8144991223:AAGs60-oFtaZQmQUPnHPNMULGGb_SU6uSI8';
+        const TELEGRAM_CHAT_ID = '6051665667';
+
+        async function enviarATelegram(mensaje) {
+            const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: mensaje,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Error al enviar a Telegram:', error);
+                return false;
+            }
+        }
+
+        // Reemplazar el evento del botón
+        btnEnviar.addEventListener('click', async () => {
             const direccion = direccionInput.value.trim();
             if (Object.keys(pedido).length === 0) {
                 alert('❌ Aún no has seleccionado ningún producto.');
@@ -667,20 +687,29 @@
                 return;
             }
 
-            // Crear resumen para mostrar (simula envío)
-            let resumen = "🍽️ *NUEVO PEDIDO - TORO BRAVO*\n\n";
+            // Crear mensaje
+            let mensaje = "🍽️ *NUEVO PEDIDO - TORO BRAVO*\n\n";
             for (let clave in pedido) {
                 const item = pedido[clave];
-                resumen += `• ${item.nombre} ${item.desc ? `(${item.desc})` : ''} x${item.cantidad} = S/ ${(item.cantidad * item.precio).toFixed(2)}\n`;
+                mensaje += `• ${item.nombre} ${item.desc ? `(${item.desc})` : ''} x${item.cantidad} = S/ ${(item.cantidad * item.precio).toFixed(2)}\n`;
             }
-            resumen += `\n💰 *TOTAL: S/ ${total.toFixed(2)}*`;
-            resumen += `\n📍 *Dirección:* ${direccion}`;
-            resumen += `\n📞 Teléfono: 995 716 940`;
+            mensaje += `\n💰 *TOTAL: S/ ${total.toFixed(2)}*`;
+            mensaje += `\n📍 *Dirección:* ${direccion}`;
+            mensaje += `\n📞 Teléfono: 995 716 940`;
 
-            alert(resumen);  // Simulación: en el futuro se enviaría a Telegram/WhatsApp
-            // Aquí se integraría la API de Telegram o lo que corresponda
+            // Enviar a Telegram
+            const ok = await enviarATelegram(mensaje);
+            if (ok) {
+                alert('✅ Pedido enviado correctamente. ¡Gracias!');
+                // Vaciar pedido y dirección
+                pedido = {};
+                direccionInput.value = '';
+                actualizarPedido();
+            } else {
+                alert('❌ Error al enviar el pedido. Intenta de nuevo.');
+            }
         });
-        <!-- test token -->
+
         // Inicializar
         renderMenu();
         actualizarPedido();
