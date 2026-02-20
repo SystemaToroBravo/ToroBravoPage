@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Toro Bravo · Restaurante & Bodega</title>
+    <!-- Google Fonts para mejor tipografía -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos (opcional, pero mejora) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #1e1e1e;
+            line-height: 1.5;
+        }
+
+        /* Encabezado */
+        .header {
+            background: linear-gradient(145deg, #b71c1c 0%, #d32f2f 100%);
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: "🥩";
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            font-size: 5rem;
+            opacity: 0.1;
+            transform: rotate(10deg);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            background: rgba(0,0,0,0.2);
+            display: inline-block;
+            padding: 0.3rem 1.5rem;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            margin-top: 0.5rem;
+        }
+
+        .info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .info-bar span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1.3rem;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            font-size: 1rem;
+        }
+
+        .telefono {
+            background: black;
+            color: white;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+            border: 2px solid #ffb74d;
+            box-shadow: 0 4px 0 #7f0000;
+        }
+
+        /* Contenedor principal */
+        .contenedor {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1000px) {
+            .contenedor {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        /* Sección menú */
+        .menu {
+            flex: 2;
+            min-width: 0;
+        }
+
+        .categoria {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 30px rgba(183, 28, 28, 0.08);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .categoria:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px rgba(183, 28, 28, 0.12);
+        }
+
+        .categoria h2 {
+            font-size: 2rem;
+            color: #b71c1c;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            border-left: 8px solid #b71c1c;
+            padding-left: 1rem;
+        }
+
+        .categoria h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+            margin: 0 0 1.2rem 1rem;
+            font-style: italic;
+            background: #f5f5f5;
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 30px;
+        }
+
+        /* Estilo de cada plato */
+        .plato {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .plato:last-child {
+            border-bottom: none;
+        }
+
+        .plato-info {
+            flex: 2 1 250px;
+        }
+
+        .plato-nombre {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #1e1e1e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .plato-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.2rem;
+            line-height: 1.4;
+        }
+
+        .plato-precio {
+            font-weight: 800;
+            color: #b71c1c;
+            background: #ffebee;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            white-space: nowrap;
+        }
+
+        .plato-controles {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #f5f5f5;
+            padding: 0.2rem;
+            border-radius: 40px;
+            margin-left: auto;
+        }
+
+        .plato-controles button {
+            background: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #b71c1c;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .plato-controles button:hover {
+            background: #b71c1c;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .plato-controles .cantidad {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* PANEL DE PEDIDO */
+        .pedido {
+            flex: 1;
+            background: white;
+            border-radius: 36px;
+            padding: 1.8rem 1.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 2px solid #b71c1c;
+            position: sticky;
+            top: 1.5rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .pedido h3 {
+            font-size: 1.8rem;
+            color: #b71c1c;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .pedido h3 i {
+            font-size: 2rem;
+        }
+
+        #lista-pedido {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        #lista-pedido li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed #ddd;
+            font-size: 0.95rem;
+        }
+
+        .item-nombre {
+            font-weight: 600;
+            flex: 2;
+        }
+
+        .item-cantidad {
+            background: #f0f0f0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            margin: 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .item-precio {
+            font-weight: 700;
+            color: #b71c1c;
+        }
+
+        .total {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: right;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            border-top: 3px solid #b71c1c;
+        }
+
+        .direccion {
+            margin: 1.2rem 0;
+        }
+
+        .direccion label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .direccion input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 60px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .direccion input:focus {
+            border-color: #b71c1c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(183,28,28,0.2);
+        }
+
+        .btn-pedido {
+            background: #b71c1c;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.4rem;
+            font-weight: 800;
+            border-radius: 60px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 0 #7f0000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-pedido:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #7f0000;
+        }
+
+        .pedido-vacio {
+            text-align: center;
+            color: #aaa;
+            padding: 2rem;
+            font-size: 1rem;
+            border: 2px dashed #ccc;
+            border-radius: 36px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e1e1e;
+            color: #ccc;
+            text-align: center;
+            padding: 1.8rem;
+            margin-top: 3rem;
+            font-size: 0.95rem;
+            border-top: 6px solid #b71c1c;
+        }
+
+        .footer a {
+            color: #ffb74d;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>TORO BRAVO</h1>
+        <p>🇵🇪 Bodega & Restaurante Peruano 🇵🇪</p>
+        <div class="info-bar">
+            <span><i class="fas fa-truck"></i> Delivery a domicilio</span>
+            <span><i class="fas fa-fire"></i> Venta de gas</span>
+        </div>
+        <div class="telefono">
+            <i class="fas fa-phone-alt"></i> 995 716 940
+        </div>
+    </header>
+
+    <div class="contenedor">
+        <!-- SECCIÓN MENÚ (generada con datos estáticos + botones) -->
+        <div class="menu" id="menu">
+            <!-- Las categorías se insertarán vía JavaScript -->
+        </div>
+
+        <!-- PANEL DE PEDIDO -->
+        <aside class="pedido">
+            <h3><i class="fas fa-shopping-bag"></i> Tu pedido</h3>
+            <div id="pedido-contenido">
+                <ul id="lista-pedido"></ul>
+                <div id="total" class="total">S/ 0.00</div>
+                <div class="direccion">
+                    <label for="direccion">📍 Dirección de entrega</label>
+                    <input type="text" id="direccion" placeholder="Ej: Av. Central 123, San Miguel">
+                </div>
+                <button class="btn-pedido" id="enviar-pedido">
+                    <i class="fab fa-whatsapp"></i> Hacer pedido
+                </button>
+            </div>
+            <div id="pedido-vacio" class="pedido-vacio">
+                <i class="fas fa-box-open" style="font-size: 3rem; opacity: 0.4;"></i>
+                <p>Selecciona productos del menú</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        <p>TORO BRAVO · Bodega & Restaurante Peruano<br>
+        📍 Dirección: Próximamente · 🕒 Horario: Próximamente<br>
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a> · <a href="#"><i class="fab fa-telegram"></i> Telegram</a></p>
+    </footer>
+
+    <script>
+        // DATOS DEL MENÚ (fiel a las imágenes + nueva categoría Abarrotes)
+        const categorias = [
+            {
+                nombre: "HAMBURGUESAS",
+                subtitulo: "Todas con lechuga y tomate",
+                items: [
+                    { nombre: "HOT DOG.", desc: "Salchichas y papas fritas", precio: 7 },
+                    { nombre: "FILETE DE POLLO", desc: "Pan, filete de pollo, papas fritas", precio: 8 },
+                    { nombre: "POLLO DESMENUZADO", desc: "Pollo desmenuzado, papas fritas", precio: 8 },
+                    { nombre: "HAMBURGUESA CLASICA", desc: "150gr. de pura carne, papa frita", precio: 8 },
+                    { nombre: "AMERICANA", desc: "Res, doble tocino, papa frita.", precio: 10 },
+                    { nombre: "CHEESE BURGER", desc: "Res, doble Queso Edam, Papas.", precio: 10 },
+                    { nombre: "ROYAL", desc: "Res, Queso Edam, huevo, papas.", precio: 12 },
+                    { nombre: "POWER BBQ.", desc: "Doble hamburguesa, queso, BBQ y papas fritas.", precio: 12 },
+                    { nombre: "RANCHERA", desc: "Res, chorizo, queso, huevo, papas", precio: 13 },
+                    { nombre: "HAWAIANA.", desc: "Res, Queso Edam, piña, tocino, papas", precio: 13 },
+                    { nombre: "BURGER TORO BRAVO.", desc: "Doble res, doble queso, huevo, tocino y papas fritas.", precio: 15 }
+                ]
+            },
+            {
+                nombre: "PARA NIÑOS",
+                subtitulo: "Porciones según a su tamaño",
+                items: [
+                    { nombre: "SALCHI KIDS.", desc: "Ricas Salchicha, papas fritas y pide con tus cremas favoritas.", precio: 7 },
+                    { nombre: "POLLO A LA PLANCHA", desc: "pollo a la plancha, acompañado de papas fritas, arroz blanco y 1 jugo en cajita.", precio: 12 },
+                    { nombre: "SALCHI CONO", desc: "Pollo desmenuzado, salchicha, papa frita. adicional: 1 jugo en cajita y 1 juguete sorpresa.", precio: 14 },
+                    { nombre: "POLLO CRISPY", desc: "Tiras de pollo crocante, salchichas y papas fritas. iguíto en cajita.", precio: 12 }
+                ]
+            },
+            {
+                nombre: "SALCHIPAPAS",
+                subtitulo: "",
+                items: [
+                    { nombre: "CLASICA", desc: "Salchicha y papas fritas.", precio: 12 },
+                    { nombre: "CHORIPAPA", desc: "Chorizo, papas fritas.", precio: 14 },
+                    { nombre: "SALCHI MIXTA", desc: "Chorizo, salchicha y papas fritas.", precio: 14 },
+                    { nombre: "SALCHI AMAZÓNICA", desc: "Tocino, chorizo, queso, salchichas plátano frito y papas", precio: 18 },
+                    { nombre: "CHICKEN CHEESE", desc: "pollo, queso edam, salchicha, y papa frita.", precio: 15 },
+                    { nombre: "SALCHI BURGUER", desc: "Hamburguesa, doble queso, salchichas y papa frita.", precio: 15 },
+                    { nombre: "ACHORADA", desc: "Chícharón de cerdo, chorizo, queso, salchichas y papas fritas.", precio: 18 },
+                    { nombre: "SALCHI TODO", desc: "Trozos de lomo, pollo desmenuzado chorizo, salchicha y papas fritas.", precio: 18 },
+                    { nombre: "SALCHI BROSTER", desc: "4 alitas broster, salchichas y papas fritas.", precio: 18 }
+                ]
+            },
+            {
+                nombre: "HECHO AL WOK",
+                subtitulo: "",
+                items: [
+                    { nombre: "CHAUFA DE POLLO", desc: "Clásico Chaufa de pollo, papas.", precio: 12 },
+                    { nombre: "CHAUFA LECHÓN O RES", desc: "Chaufa con trozos de lechón o lomo y papas.", precio: 14 },
+                    { nombre: "CHAUFA AMAZÓNICO", desc: "Chaufa con cerdo, tocino, chorizo y plátano frito.", precio: 16 },
+                    { nombre: "COMBINADO PERFECTO", desc: "Tallarines, chaufa, pollo broster.", precio: 16 },
+                    { nombre: "LOMO SALTADO", desc: "Emblemático lomo saltado, acompañado de papas fritas y arroz.", precio: 18 },
+                    { nombre: "LOMO SALTADO A LO POBRE", desc: "Embajador lomo saltado con huevo, plátano frito, arroz y papas fritas.", precio: 20 },
+                    { nombre: "TALLARIN SALTADO", desc: "Nuestro tradicional tallarin saltado de Lomo, Cebolla, tomate, en su punto.", precio: 16 },
+                    { nombre: "LOMO SALTADO C/ CHAUFA", desc: "Lomo saltado acompañando de arroz chaufa y papas fritas.", precio: 20 }
+                ]
+            },
+            {
+                nombre: "ESPECIALES",
+                subtitulo: "",
+                items: [
+                    { nombre: "ALITAS BROSTER", desc: "6 alitas crocantes + papas fritas.", precio: 15 },
+                    { nombre: "ALITAS ACEVICHADAS", desc: "6 Alitas crocantes bañadas en salsa acevichada + papas fritas.", precio: 15 },
+                    { nombre: "ALITAS BBQ y/o PICANTE", desc: "6 alitas BBQ o BBQ picante + papas fritas.", precio: 15 },
+                    { nombre: "DUO ALITAS (2 sabores)", desc: "8 alitas + papas fritas", precio: 18 },
+                    { nombre: "COMBO ALITAS BROSTER", desc: "12 alitas broster + papas fritas", precio: 25 },
+                    { nombre: "COMBO BRAVO (libre elección)", desc: "25 alitas broster + arroz chaufa y papas fritas.", precio: 59 },
+                    { nombre: "REAL MOSTRITO", desc: "Pollo broster, chaufa y papas fritas.", precio: 13 },
+                    { nombre: "MOSTRI ALITAS", desc: "5 alitas broster, chaufa y papas fritas.", precio: 16 },
+                    { nombre: "POLLO BROSTER", desc: "pollo broster acompañado de papas fritas.", precio: 12 },
+                    { nombre: "COSTILLAS DE CERDO BBQ", desc: "Costillas de cerdo BBQ, acompañado de arroz chaufa y papas fritas.", precio: 18 },
+                    { nombre: "MIX BBQ", desc: "4 alitas BBQ y costillas de cerdo BBQ acompañado de papas fritas.", precio: 18 },
+                    { nombre: "CALDO DE POLLO", desc: "Clásico, huevo, papa amarilla y canchita.", precio: 8 }
+                ]
+            },
+            {
+                nombre: "TEQUENOS Y GUARNICIONES",
+                subtitulo: "",
+                items: [
+                    { nombre: "TEQUENOS DE QUESO 10 unid", desc: "Tequenos rellenos de queso, acompañados de cremoso guacamole.", precio: 12 },
+                    { nombre: "TEQUENOS DE QUESO 20 unid", desc: "Tequenos rellenos de queso, acompañados de cremoso guacamole.", precio: 22 },
+                    { nombre: "PLATANO FRITO.", desc: "", precio: 2 },
+                    { nombre: "1/2 PORCIÓN DE CHAUFA.", desc: "", precio: 7 },
+                    { nombre: "1 PORCIÓN CHAUFA.", desc: "", precio: 10 },
+                    { nombre: "1/2 PORCIÓN DE PAPAS FRITAS", desc: "", precio: 6 },
+                    { nombre: "1 PORCIÓN DE PAPAS FRITAS", desc: "", precio: 10 },
+                    { nombre: "1 PORCIÓN DE ARROZ BLANCO", desc: "", precio: 5 }
+                ]
+            },
+            {
+                nombre: "ABARROTES Y GAS",
+                subtitulo: "Productos de despensa y gas para tu hogar",
+                items: [
+                    { nombre: "Balón de Gas 10 kg", desc: "Incluye conexión y prueba", precio: 45 },
+                    { nombre: "Arroz Costeño 1kg", desc: "Grano extra", precio: 4.5 },
+                    { nombre: "Fideos Don Vittorio 500g", desc: "Spaghetti", precio: 3.2 },
+                    { nombre: "Atún en lata 180g", desc: "Primera calidad", precio: 5 },
+                    { nombre: "Aceite vegetal 1L", desc: "Ideal para cocina", precio: 7 },
+                    { nombre: "Leche Gloria 1L", desc: "UHT entera", precio: 3.8 }
+                ]
+            }
+        ];
+
+        // Estado del pedido (objeto con clave = nombre, valor = {cantidad, precio})
+        let pedido = {};
+        let total = 0;
+
+        // Referencias DOM
+        const menuDiv = document.getElementById('menu');
+        const listaPedido = document.getElementById('lista-pedido');
+        const totalSpan = document.getElementById('total');
+        const pedidoVacio = document.getElementById('pedido-vacio');
+        const pedidoContenido = document.getElementById('pedido-contenido');
+        const btnEnviar = document.getElementById('enviar-pedido');
+        const direccionInput = document.getElementById('direccion');
+
+        // Función para renderizar el menú
+        function renderMenu() {
+            let html = '';
+            categorias.forEach(cat => {
+                html += `<div class="categoria">`;
+                html += `<h2>${cat.nombre}</h2>`;
+                if (cat.subtitulo) html += `<h3>${cat.subtitulo}</h3>`;
+                cat.items.forEach(item => {
+                    const key = item.nombre + (item.desc ? ` · ${item.desc}` : '');
+                    html += `
+                        <div class="plato" data-nombre="${item.nombre}" data-desc="${item.desc || ''}" data-precio="${item.precio}">
+                            <div class="plato-info">
+                                <span class="plato-nombre">${item.nombre}</span>
+                                ${item.desc ? `<div class="plato-desc">${item.desc}</div>` : ''}
+                            </div>
+                            <div class="plato-precio">S/ ${item.precio.toFixed(2)}</div>
+                            <div class="plato-controles">
+                                <button class="btn-menos">−</button>
+                                <span class="cantidad">0</span>
+                                <button class="btn-mas">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+            menuDiv.innerHTML = html;
+
+            // Asignar eventos a los botones
+            document.querySelectorAll('.plato').forEach(plato => {
+                const nombre = plato.dataset.nombre;
+                const desc = plato.dataset.desc;
+                const precio = parseFloat(plato.dataset.precio);
+                const btnMas = plato.querySelector('.btn-mas');
+                const btnMenos = plato.querySelector('.btn-menos');
+                const spanCant = plato.querySelector('.cantidad');
+
+                // Clave única para el pedido (incluye descripción para distinguir variantes)
+                const clave = nombre + (desc ? ` - ${desc}` : '');
+
+                btnMas.addEventListener('click', () => {
+                    if (!pedido[clave]) {
+                        pedido[clave] = { cantidad: 0, precio: precio, nombre: nombre, desc: desc };
+                    }
+                    pedido[clave].cantidad++;
+                    spanCant.textContent = pedido[clave].cantidad;
+                    actualizarPedido();
+                });
+
+                btnMenos.addEventListener('click', () => {
+                    if (pedido[clave] && pedido[clave].cantidad > 0) {
+                        pedido[clave].cantidad--;
+                        spanCant.textContent = pedido[clave].cantidad;
+                        if (pedido[clave].cantidad === 0) {
+                            delete pedido[clave];
+                        }
+                        actualizarPedido();
+                    }
+                });
+            });
+        }
+
+        // Actualizar panel de pedido
+        function actualizarPedido() {
+            // Actualizar cantidades en el menú
+            document.querySelectorAll('.plato').forEach(plato => {
+                const nombre = plato.dataset.nombre;
+                const desc = plato.dataset.desc;
+                const clave = nombre + (desc ? ` - ${desc}` : '');
+                const spanCant = plato.querySelector('.cantidad');
+                if (pedido[clave]) {
+                    spanCant.textContent = pedido[clave].cantidad;
+                } else {
+                    spanCant.textContent = '0';
+                }
+            });
+
+            // Calcular total y generar lista HTML
+            total = 0;
+            let itemsHtml = '';
+            for (let clave in pedido) {
+                const item = pedido[clave];
+                const subtotal = item.cantidad * item.precio;
+                total += subtotal;
+                itemsHtml += `<li>
+                    <span class="item-nombre">${item.nombre} ${item.desc ? `<small>${item.desc}</small>` : ''}</span>
+                    <span class="item-cantidad">x${item.cantidad}</span>
+                    <span class="item-precio">S/ ${subtotal.toFixed(2)}</span>
+                </li>`;
+            }
+
+            if (itemsHtml === '') {
+                pedidoVacio.style.display = 'block';
+                pedidoContenido.style.display = 'none';
+            } else {
+                pedidoVacio.style.display = 'none';
+                pedidoContenido.style.display = 'block';
+                listaPedido.innerHTML = itemsHtml;
+                totalSpan.textContent = `S/ ${total.toFixed(2)}`;
+            }
+        }
+
+        // Enviar pedido (simulación)
+        btnEnviar.addEventListener('click', () => {
+            const direccion = direccionInput.value.trim();
+            if (Object.keys(pedido).length === 0) {
+                alert('❌ Aún no has seleccionado ningún producto.');
+                return;
+            }
+            if (!direccion) {
+                alert('📝 Por favor ingresa tu dirección de entrega.');
+                return;
+            }
+
+            // Crear resumen para mostrar (simula envío)
+            let resumen = "🍽️ *NUEVO PEDIDO - TORO BRAVO*\n\n";
+            for (let clave in pedido) {
+                const item = pedido[clave];
+                resumen += `• ${item.nombre} ${item.desc ? `(${item.desc})` : ''} x${item.cantidad} = S/ ${(item.cantidad * item.precio).toFixed(2)}\n`;
+            }
+            resumen += `\n💰 *TOTAL: S/ ${total.toFixed(2)}*`;
+            resumen += `\n📍 *Dirección:* ${direccion}`;
+            resumen += `\n📞 Teléfono: 995 716 940`;
+
+            alert(resumen);  // Simulación: en el futuro se enviaría a Telegram/WhatsApp
+            // Aquí se integraría la API de Telegram o lo que corresponda
+        });
+
+        // Inicializar
+        renderMenu();
+        actualizarPedido();
+    </script>
+</body>
+</html>
