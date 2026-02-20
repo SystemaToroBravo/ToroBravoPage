@@ -314,6 +314,29 @@
             border-top: 3px solid #b71c1c;
         }
 
+        .telefono-cliente {
+            margin: 1rem 0;
+        }
+        .telefono-cliente label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+        .telefono-cliente input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 60px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .telefono-cliente input:focus {
+            border-color: #b71c1c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(183,28,28,0.2);
+        }
+
         .direccion {
             margin: 1.2rem 0;
         }
@@ -416,7 +439,12 @@
                 <div id="total" class="total">S/ 0.00</div>
                 <div class="direccion">
                     <label for="direccion">📍 Dirección de entrega</label>
-                    <input type="text" id="direccion" placeholder="Ej: Av. Central 123, San Miguel">
+                    <input type="text" id="direccion" placeholder="Ej: B22, San Jacinto">
+                </div>
+                <!-- Nouveau champ téléphone -->
+                <div class="telefono-cliente">
+                    <label for="telefono">📞 Tu teléfono de contacto</label>
+                    <input type="tel" id="telefono" placeholder="Ej: 999 888 222">
                 </div>
                 <button class="btn-pedido" id="enviar-pedido">
                     <i class="fab fa-whatsapp"></i> Hacer pedido
@@ -431,7 +459,7 @@
 
     <footer class="footer">
         <p>TORO BRAVO · Bodega & Restaurante Peruano<br>
-        📍 Dirección: Próximamente · 🕒 Horario: Próximamente<br>
+        📍 Dirección: A frente del condominio San Jacinto · 🕒 Horario: Si tienes plata no hay hora<br>
         <a href="#"><i class="fab fa-instagram"></i> Instagram</a> · <a href="#"><i class="fab fa-telegram"></i> Telegram</a></p>
     </footer>
 
@@ -552,6 +580,7 @@
         const pedidoContenido = document.getElementById('pedido-contenido');
         const btnEnviar = document.getElementById('enviar-pedido');
         const direccionInput = document.getElementById('direccion');
+        const telefonoInput = document.getElementById('telefono');
 
         // Función para renderizar el menú
         function renderMenu() {
@@ -678,6 +707,8 @@
         // Reemplazar el evento del botón
         btnEnviar.addEventListener('click', async () => {
             const direccion = direccionInput.value.trim();
+            const telefono = telefonoInput.value.trim();
+
             if (Object.keys(pedido).length === 0) {
                 alert('❌ Aún no has seleccionado ningún producto.');
                 return;
@@ -686,8 +717,12 @@
                 alert('📝 Por favor ingresa tu dirección de entrega.');
                 return;
             }
+            if (!telefono) {
+                alert('📞 Por favor ingresa tu teléfono de contacto.');
+                return;
+            }
 
-            // Crear mensaje
+            // Créer le message
             let mensaje = "🍽️ *NUEVO PEDIDO - TORO BRAVO*\n\n";
             for (let clave in pedido) {
                 const item = pedido[clave];
@@ -695,15 +730,16 @@
             }
             mensaje += `\n💰 *TOTAL: S/ ${total.toFixed(2)}*`;
             mensaje += `\n📍 *Dirección:* ${direccion}`;
-            mensaje += `\n📞 Teléfono: 995 716 940`;
+            mensaje += `\n📞 *Teléfono cliente:* ${telefono}`;  // Ajout du numéro client
 
-            // Enviar a Telegram
+            // Envoyer à Telegram
             const ok = await enviarATelegram(mensaje);
             if (ok) {
                 alert('✅ Pedido enviado correctamente. ¡Gracias!');
-                // Vaciar pedido y dirección
+                // Vider le panier, l'adresse et le téléphone
                 pedido = {};
                 direccionInput.value = '';
+                telefonoInput.value = '';
                 actualizarPedido();
             } else {
                 alert('❌ Error al enviar el pedido. Intenta de nuevo.');
